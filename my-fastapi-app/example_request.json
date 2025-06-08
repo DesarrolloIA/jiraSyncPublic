@@ -1,0 +1,52 @@
+{
+    "ejemplo_formato_lista": {
+        "descripcion": "Usa los mismos nombres de campos que en Jira",
+        "request": {
+            "jira_domain": "your-domain.atlassian.net",
+            "jira_email": "your-email@example.com",
+            "jira_api_token": "your-jira-api-token-here",
+            "jql": "project = SAC",
+            "fields": [
+                "summary",
+                "status",
+                "priority",
+                "assignee",
+                "customfield_10860"
+            ],
+            "mysql_host": "localhost",
+            "mysql_port": 3306,
+            "mysql_user": "root",
+            "mysql_password": "your-mysql-password",
+            "mysql_database": "jira_sync",
+            "mysql_table": "jira_issues",
+            "max_results_per_page": 100
+        }
+    },
+    "ejemplo_con_mapeo": {
+        "descripcion": "Mapea campos de Jira a nombres personalizados en MySQL",
+        "request": {
+            "jira_domain": "your-domain.atlassian.net",
+            "jira_email": "your-email@example.com",
+            "jira_api_token": "your-jira-api-token-here",
+            "jql": "project = SAC AND status = 'In Progress'",
+            "fields": {
+                "summary": "resumen",
+                "status": "estado",
+                "priority": "prioridad",
+                "assignee": "asignado_a",
+                "reporter": "reportado_por",
+                "created": "fecha_creacion",
+                "updated": "fecha_actualizacion",
+                "customfield_10860": "tipo_cliente",
+                "customfield_10001": "campo_personalizado"
+            },
+            "mysql_host": "localhost",
+            "mysql_port": 3306,
+            "mysql_user": "root",
+            "mysql_password": "your-mysql-password",
+            "mysql_database": "jira_sync",
+            "mysql_table": "tickets_jira",
+            "max_results_per_page": 100
+        }
+    }
+} 

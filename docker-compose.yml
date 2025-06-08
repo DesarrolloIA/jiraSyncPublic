@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./my-fastapi-app
+      dockerfile: Dockerfile
+    container_name: jira-sync-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./backups:/app/backups
+    networks:
+      - jira-sync-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: jira-sync-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - jira-sync-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  jira-sync-network:
+    driver: bridge 
