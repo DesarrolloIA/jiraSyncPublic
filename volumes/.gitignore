@@ -1,0 +1,7 @@
+# Ignorar todo en estos directorios
+mysql/*
+backups/*
+
+# Pero mantener los directorios
+!mysql/.gitkeep
+!backups/.gitkeep 

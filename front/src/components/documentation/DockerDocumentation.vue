@@ -289,20 +289,15 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Push images
-      run: |
-        docker push myapp-backend
-        docker push myapp-frontend
+        username: "${DOCKER_USERNAME}"
+        password: "${DOCKER_PASSWORD}"
     
     - name: Deploy to server
       uses: appleboy/ssh-action@v0.1.5
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
+        host: "${HOST}"
+        username: "${USERNAME}"
+        key: "${SSH_KEY}"
         script: |
           cd /app
           docker-compose pull

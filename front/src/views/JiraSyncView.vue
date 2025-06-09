@@ -178,7 +178,7 @@ import SyncHistoryList from '@/components/SyncHistoryList.vue'
 import SyncLogsViewer from '@/components/SyncLogsViewer.vue'
 
 const syncStore = useJiraSyncStore()
-const showDetailModal = ref(false)
+const showDetailModal = ref<boolean>(false)
 const selectedTaskId = ref<string | null>(null)
 const syncLogs = ref<any[]>([])
 const isLoadingLogs = ref(false)

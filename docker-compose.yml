@@ -7,13 +7,21 @@ services:
       dockerfile: Dockerfile
     container_name: jira-sync-backend
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT}:8000"
     environment:
       - PYTHONUNBUFFERED=1
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
-      - ./backups:/app/backups
+      - ./volumes/backups:/app/backups
+      - ./my-fastapi-app:/app
     networks:
       - jira-sync-network
+    depends_on:
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -27,7 +35,7 @@ services:
       dockerfile: Dockerfile
     container_name: jira-sync-frontend
     ports:
-      - "80:80"
+      - "${FRONTEND_PORT}:80"
     depends_on:
       - backend
     networks:
@@ -38,6 +46,48 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  mysql:
+    image: mysql:8.0
+    container_name: jira-sync-mysql
+    ports:
+      - "${MYSQL_PORT}:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+      - ./config/mysql:/etc/mysql/conf.d
+    networks:
+      - jira-sync-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: jira-sync-phpmyadmin
+    ports:
+      - "${PHPMYADMIN_PORT}:80"
+    environment:
+      - PMA_HOST=${PMA_HOST}
+      - PMA_PORT=${PMA_PORT}
+      - PMA_ARBITRARY=${PMA_ARBITRARY}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - UPLOAD_LIMIT=${UPLOAD_LIMIT}
+    volumes:
+      - ./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - jira-sync-network
+    restart: unless-stopped
 
 networks:
   jira-sync-network:

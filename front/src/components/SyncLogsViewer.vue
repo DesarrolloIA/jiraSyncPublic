@@ -169,6 +169,7 @@ interface SyncLog {
   error_message: string | null
 }
 
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const logs = ref<SyncLog[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -182,7 +183,7 @@ const fetchLogs = async () => {
   error.value = null
   
   try {
-    const response = await axios.get('http://localhost:8000/api/logs/all')
+    const response = await axios.get(`${apiUrl}/api/logs/all`)
     
     if (response.data.success && response.data.logs) {
       logs.value = response.data.logs
@@ -226,7 +227,7 @@ const getStatusClass = (status: string) => {
 const downloadBackup = (filename: string) => {
   if (!filename) return
   
-  const url = `http://localhost:8000/backups/${filename}`
+  const url = `${apiUrl}/backups/${filename}`
   window.open(url, '_blank')
 }
 
@@ -244,7 +245,7 @@ const deleteLog = async () => {
   if (!selectedLog.value) return
   
   try {
-    const response = await axios.delete(`http://localhost:8000/api/logs/${selectedLog.value.task_id}`)
+    const response = await axios.delete(`${apiUrl}/api/logs/${selectedLog.value.task_id}`)
     
     if (response.data.success) {
       showDeleteDialog.value = false
@@ -265,7 +266,7 @@ const deleteLog = async () => {
 
 const resetTable = async () => {
   try {
-    const response = await axios.post('http://localhost:8000/api/logs/reset-table')
+    const response = await axios.post(`${apiUrl}/api/logs/reset-table`)
     
     if (response.data.success) {
       showResetDialog.value = false

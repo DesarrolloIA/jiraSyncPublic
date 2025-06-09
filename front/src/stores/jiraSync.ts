@@ -90,8 +90,8 @@ export const useJiraSyncStore = defineStore('jiraSync', () => {
   
   // Computed
   const isRunning = computed(() => {
-    return currentTask.value && 
-           !['completado', 'error'].includes(currentTask.value.status)
+    if (!currentTask.value) return false
+    return !['completado', 'error'].includes(currentTask.value.status)
   })
   
   const statusColor = computed(() => {

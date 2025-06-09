@@ -153,4 +153,77 @@ Navega a `http://localhost:5173` en tu navegador.
 
 ## 📄 Licencia
 
-Este proyecto está bajo la licencia MIT. 
+Este proyecto está bajo la licencia MIT.
+
+# Jira Sync - Herramientas de Reinicio
+
+Este directorio contiene scripts para facilitar el reinicio y mantenimiento de la aplicación Jira Sync.
+
+## Configuración Inicial
+
+1. Copia el archivo `env.example` a `.env`:
+   ```bash
+   cp env.example .env
+   ```
+
+2. Edita el archivo `.env` con tus configuraciones:
+   - `MYSQL_ROOT_PASSWORD`: Contraseña para el usuario root de MySQL
+   - `MYSQL_DATABASE`: Nombre de la base de datos (por defecto: jiradb)
+   - `MYSQL_USER`: Usuario de MySQL (por defecto: root)
+   - Puertos de los servicios:
+     - `FRONTEND_PORT`: Puerto para el frontend (por defecto: 80)
+     - `BACKEND_PORT`: Puerto para el backend (por defecto: 8000)
+     - `PHPMYADMIN_PORT`: Puerto para phpMyAdmin (por defecto: 8080)
+     - `MYSQL_PORT`: Puerto para MySQL (por defecto: 3306)
+
+## Scripts Disponibles
+
+Hay dos scripts disponibles, uno para cada sistema operativo:
+
+- `reset.sh` - Para sistemas Linux/Unix
+- `reset.ps1` - Para sistemas Windows
+
+Ambos scripts proporcionan exactamente la misma funcionalidad, solo cambia la forma de ejecutarlos según el sistema operativo.
+
+## Funcionalidades
+
+Los scripts ofrecen las siguientes opciones:
+
+1. **Reinicio Completo**: Elimina todos los datos y restaura las configuraciones por defecto
+2. **Reinicio de MySQL**: Elimina solo los datos de la base de datos
+3. **Reinicio de Backups**: Limpia solo los backups almacenados
+4. **Reinicio de Configuraciones**: Restaura las configuraciones por defecto
+
+## Cómo Usar
+
+### En Windows:
+
+1. Abre PowerShell
+2. Navega al directorio del proyecto
+3. Ejecuta:
+   ```powershell
+   .\reset.ps1
+   ```
+
+### En Linux/Unix:
+
+1. Abre una terminal
+2. Navega al directorio del proyecto
+3. Ejecuta:
+   ```bash
+   ./reset.sh
+   ```
+
+## Notas Importantes
+
+- Los scripts deben ejecutarse desde el directorio raíz del proyecto (donde está el archivo `docker-compose.yml`)
+- Si no existe el archivo `.env`, los scripts crearán uno automáticamente a partir de `env.example`
+- Después de cualquier reinicio que detenga los contenedores, necesitarás ejecutar `docker compose up -d` para volver a iniciar los servicios
+- Los scripts pedirán confirmación antes de realizar cualquier acción destructiva
+- Se mantendrá la estructura de directorios incluso después de limpiar los datos
+
+## Requisitos
+
+- Docker y Docker Compose instalados y funcionando
+- En Windows: PowerShell 5.0 o superior
+- En Linux/Unix: Bash shell 
